@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-image: url("background2.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            -webkit-text-stroke: 1px blue;
+            font-size: 3em;
+            margin-top: 20px;
+        }
+        .cont {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            max-width: 400px;
+            margin: 50px auto;
+            color: white;
+        }
+        .cont label {
+            font-size: 1.5em;
+        }
+        .cont input[type="text"],
+        .cont input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 1.2em;
+        }
+        .cont input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        .cont input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .cont .text-center {
+            text-align: center;
+        }
+        .cont a {
+            color: #ffcc00;
+            font-size: 1.2em;
+            text-decoration: none;
+        }
+        .cont a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            font-size: 1em;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .success-message {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1>Registration</h1>
+    </div>
+    <div class="cont">
+        <!-- Success message container -->
+        <div id="success-message" class="success-message">Registration Successful!</div>
+        
+        <form id="registrationForm" action="/register" method="POST">
+            <div class="error-message" id="error-message"></div>
+            <label for="user">Username:</label><br>
+            <input type="text" id="user" name="username" placeholder="Enter your username"><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" placeholder="Enter your password"><br><br>
+            <input type="submit" id="simple_click" class="btn btn-primary" value="Register"><br>
+        </form>
+        <br>
+        <div class="text-center">
+            <a href="/">Already have an account? Login here</a>
+        </div>
+    </div>
+    <script>
+        const form = document.getElementById('registrationForm');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const usernameInput = document.getElementById('user');
+        const passwordInput = document.getElementById('password');
+
+        // Function to show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        // Function to hide error message
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Check if there's a success parameter in the URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            
+            if (success === 'true') {
+                successMessage.style.display = 'block';
+            }
+        });
+
+        // Check username existence via AJAX
+        async function checkUsernameExists(username) {
+            try {
+                const response = await fetch('/check-username', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username })
+                });
+                const data = await response.json();
+                return data.exists;
+            } catch (error) {
+                console.error('Error checking username:', error);
+                return false;
+            }
+        }
+
+        // Form submission event listener
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+            hideError(); // Clear any previous error messages
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            // Check if fields are empty
+            if (!username || !password) {
+                showError('Both username and password are required.');
+                return;
+            }
+
+            // Check username length
+            if (username.length < 3) {
+                showError('Username must be at least 3 characters long.');
+                return;
+            }
+
+            // Check if username already exists
+            const usernameExists = await checkUsernameExists(username);
+            if (usernameExists) {
+                showError('Username already exists. Please choose a different username.');
+                return;
+            }
+            
+            // If all validations pass, submit the form
+            form.submit();
+  
+        });
+
+        // Optional: Add real-time username validation
+        usernameInput.addEventListener('input', function() {
+            hideError();
+        });
+    </script>
+</body>
+</html>

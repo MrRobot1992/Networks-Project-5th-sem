@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-image: url("background1.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            -webkit-text-stroke: 1px black;
+            font-size: 3em;
+            margin-top: 20px;
+        }
+        .cont {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            max-width: 400px;
+            margin: 50px auto;
+            color: white;
+        }
+        .cont label {
+            font-size: 1.5em;
+        }
+        .cont input[type="text"],
+        .cont input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            font-size: 1.2em;
+        }
+        .cont input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        .cont input[type="submit"]:hover {
+            background-color: #218838;
+        }
+        .cont a {
+            color: #ffcc00;
+            font-size: 1.2em;
+            text-decoration: none;
+        }
+        .cont a:hover {
+            text-decoration: underline;
+        }
+        .cont .text-center {
+            text-align: center;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .success-message {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome</h1>
+    </div>
+    <div class="cont">
+        <!-- Error message container -->
+        <div id="errorContainer" class="error-message"></div>
+        <div id="success-message" class="success-message">Registration Successful!</div>
+        <form method="POST">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" placeholder="Enter your username"><br>
+            
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" placeholder="Enter your password"><br><br>
+            
+            <input type="submit" value="Login">
+        </form>
+        <br>
+        <div class="text-center">
+            <a href="registration">I don't have an account</a>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    const successMessage = document.getElementById('success-message');  
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check for error in URL and display it
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        const error = urlParams.get('error');
+        const errorContainer = document.getElementById('errorContainer');
+        
+        if (error) {
+            switch(error) {
+                case 'user-not-found':
+                    errorContainer.textContent = 'User not found.';
+                    break;
+                case 'incorrect-password':
+                    errorContainer.textContent = 'Incorrect password.';
+                    break;
+            }
+        }
+        if (success === 'true') {
+            successMessage.style.display = 'block';
+        }
+    });
+</script>
